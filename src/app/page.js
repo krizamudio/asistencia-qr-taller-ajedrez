@@ -171,29 +171,27 @@ export default function Home() {
                   </div>
                 </div>
 
-                {detalleAbierto === s.id && (
-                  <div className="mt-4 border-t pt-4">
-                    {asistentesDetalle.length === 0 ? (
-                      <p className="text-gray-400 text-sm">Nadie registró asistencia.</p>
-                    ) : (
-                      <ul className="space-y-1 mb-3">
-                        {asistentesDetalle.map((a, i) => (
-                          <li key={i} className="text-sm text-gray-700 flex justify-between">
-                            <span>{a.nombre}</span>
-                            <span className="text-gray-400">
-                              {new Date(a.registrado_en).toLocaleTimeString('es-MX')}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
+                {asistentesDetalle.length === 0 ? (
+                  <p className="text-gray-400 text-sm">Nadie registró asistencia.</p>
+                ) : (
+                  <>
+                    <ul className="space-y-1 mb-3">
+                      {asistentesDetalle.map((a, i) => (
+                        <li key={i} className="text-sm text-gray-700 flex justify-between">
+                          <span>{a.nombre}</span>
+                          <span className="text-gray-400">
+                            {new Date(a.registrado_en).toLocaleTimeString('es-MX')}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
                     <button
                       onClick={() => exportarCSV(s, asistentesDetalle)}
                       className="text-xs bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium px-3 py-1.5 rounded border border-gray-300"
                     >
                       Exportar a CSV
                     </button>
-                  </div>
+                  </>
                 )}
               </div>
             ))}
