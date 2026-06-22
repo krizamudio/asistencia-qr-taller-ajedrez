@@ -66,3 +66,27 @@ export async function POST(request, { params }) {
     return NextResponse.json({ error: 'Error al registrar asistencia' }, { status: 500 });
   }
 }
+
+// Eliminar una sesión y sus asistencias
+export async function DELETE(request, { params }) {
+  try {
+    const { id } = await params;
+
+    // Primero borramos las asistencias (por la restricción de foreign key)
+    await pool.query(
+      `DELETE FROM asistencias WHERE sesion_id = $1`,
+      [id]
+    );
+
+    // Luego borramos la sesión
+    await pool.query(
+      `DELETE FROM sesiones WHERE id = $1`,
+      [id]
+    );
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: 'Error al eliminar sesión' }, { status: 500 });
+  }
+}

@@ -14,7 +14,6 @@ export default function Home() {
 
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
 
-  // Cargar historial de sesiones
   const cargarSesiones = useCallback(async () => {
     const res = await fetch('/api/sesiones');
     const data = await res.json();
@@ -25,7 +24,6 @@ export default function Home() {
     cargarSesiones();
   }, [cargarSesiones]);
 
-  // Generar nueva sesión + QR
   const generarSesion = async () => {
     setCargando(true);
     try {
@@ -45,7 +43,6 @@ export default function Home() {
     }
   };
 
-  // Cuenta regresiva del QR activo
   useEffect(() => {
     if (!sesionActual) return;
 
@@ -68,21 +65,18 @@ export default function Home() {
     return `${min}:${seg.toString().padStart(2, '0')}`;
   };
 
-  // Ver detalle de una sesión pasada
   const verDetalle = async (id) => {
-  if (detalleAbierto === id) {
-    setDetalleAbierto(null);
-    return;
-  }
-  const res = await fetch(`/api/sesiones/${id}`);
-  const data = await res.json();
-  setAsistentesDetalle(data.asistencias);
-  setDetalleAbierto(id);
-  // Actualizar el conteo en la lista
-  await cargarSesiones();
-};
+    if (detalleAbierto === id) {
+      setDetalleAbierto(null);
+      return;
+    }
+    const res = await fetch(`/api/sesiones/${id}`);
+    const data = await res.json();
+    setAsistentesDetalle(data.asistencias);
+    setDetalleAbierto(id);
+    await cargarSesiones();
+  };
 
-  // Exportar una sesión a CSV
   const exportarCSV = (sesion, asistentes) => {
     const fecha = new Date(sesion.creada_en).toLocaleString('es-MX');
     let csv = 'Nombre,Fecha de registro\n';
@@ -95,6 +89,15 @@ export default function Home() {
     link.href = URL.createObjectURL(blob);
     link.download = `asistencia_${fecha.replace(/[/:, ]/g, '_')}.csv`;
     link.click();
+  };
+
+  const eliminarSesion = async (id) => {
+    const confirmar = window.confirm('¿Seguro que quieres eliminar esta sesión y toda su asistencia? Esta acción no se puede deshacer.');
+    if (!confirmar) return;
+
+    await fetch(`/api/sesiones/${id}`, { method: 'DELETE' });
+    await cargarSesiones();
+    if (detalleAbierto === id) setDetalleAbierto(null);
   };
 
   return (
@@ -152,12 +155,20 @@ export default function Home() {
                       {s.total_asistencias} asistente(s)
                     </p>
                   </div>
-                  <button
-                    onClick={() => verDetalle(s.id)}
-                    className="text-blue-600 text-sm font-medium hover:underline"
-                  >
-                    {detalleAbierto === s.id ? 'Ocultar' : 'Ver detalle'}
-                  </button>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => verDetalle(s.id)}
+                      className="text-blue-600 text-sm font-medium hover:underline"
+                    >
+                      {detalleAbierto === s.id ? 'Ocultar' : 'Ver detalle'}
+                    </button>
+                    <button
+                      onClick={() => eliminarSesion(s.id)}
+                      className="text-red-500 text-sm font-medium hover:underline"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
                 </div>
 
                 {detalleAbierto === s.id && (
