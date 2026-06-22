@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Asistencia QR — rápido, bonito y sin líos 😎
 
-## Getting Started
+Genera un QR, la banda lo escanea, pone su nombre y queda registrada. Ideal para talleres, clases o cualquier junta donde quieras checar asistencia sin tanto rollo.
 
-First, run the development server:
+**Lo esencial**
+- Crea una sesión con QR que expira (por defecto 20 minutos).
+- La banda registra su nombre desde el QR y queda guardada en la BD.
+- Panel del profe: genera QR, ve historial, detalle de asistentes y exporta a CSV.
+- BD: PostgreSQL con tablas `sesiones` y `asistencias`.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+**Qué hace (en corto)**
+- Genera QR dinámicos (cliente + servidor).
+- Controla la expiración de la sesión para que nadie se cuele después.
+- Normaliza el nombre a mayúsculas para que todo quede parejo.
+- Exporta la lista de asistencias a CSV desde el panel.
+
+**Stack y dependencias principales**
+- Next.js (App Router) v16
+- React 19
+- PostgreSQL (`pg`)
+- `qrcode` para generar QR
+- `dotenv`, `uuid`
+- `tailwindcss`
+
+**Ponte en marcha**
+1. Clona el repo y métete a la carpeta del proyecto.
+2. Crea un archivo `.env.local` con tu conexión a Postgres (pon tus datos):
+
+```
+DATABASE_URL=postgres://usuario:password@host:puerto/base_de_datos
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Instala dependencias (recomendado `pnpm`):
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```
+pnpm install
+# o
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Ejecuta el script que crea las tablas:
 
-## Learn More
+```
+node scripts/setup-db.js
+```
 
-To learn more about Next.js, take a look at the following resources:
+5. Arranca la app en modo desarrollo:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+pnpm dev
+# o
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Archivos chidos / a revisar**
+- Panel / generador de QR: [src/app/page.js](src/app/page.js)
+- Registro vía QR (alumnos): [src/app/asistencia/[id]/page.js](src/app/asistencia/[id]/page.js)
+- API sesiones (crear / listar): [src/app/api/sesiones/route.js](src/app/api/sesiones/route.js)
+- API sesión (detalle / registrar): [src/app/api/sesiones/[id]/route.js](src/app/api/sesiones/[id]/route.js)
+- Conexión a DB: [src/lib/db.js](src/lib/db.js)
+- Script para inicializar la BD: [scripts/setup-db.js](scripts/setup-db.js)
 
-## Deploy on Vercel
+**Consejitos**
+- Usa `pnpm` si lo tienes (hay `pnpm-lock.yaml`).
+- Para cambiar cuánto dura el QR, edita `minutosExpiracion` en `src/app/api/sesiones/route.js`.
+- Si querés, te agrego badges, un GIF demo o un `.env.example` listo para copiar.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+¡Listo! Si querés que lo deje más chido (imágenes, GIFs o badges), dime y lo dejo niquelado ✨
