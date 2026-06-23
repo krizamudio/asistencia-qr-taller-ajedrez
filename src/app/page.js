@@ -14,7 +14,7 @@ export default function Home() {
   const [cargando, setCargando] = useState(false);
 
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-  useInactividad(3); // bloquea tras 3 minutos de inactividad
+  useInactividad(1); // bloquea tras 3 minutos de inactividad
 
   const cargarSesiones = useCallback(async () => {
     const res = await fetch('/api/sesiones');

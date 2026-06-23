@@ -8,6 +8,7 @@ export function middleware(request) {
     pathname.startsWith('/asistencia') ||
     pathname.startsWith('/login') ||
     pathname.startsWith('/api/auth') ||
+    pathname.startsWith('/sesion-expirada') ||
     pathname.startsWith('/api/sesiones');
 
   if (esPublica) return NextResponse.next();
