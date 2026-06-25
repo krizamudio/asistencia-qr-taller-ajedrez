@@ -101,7 +101,7 @@ export default function Home() {
   };
 
   const eliminarSesion = async (id) => {
-    const confirmar = window.confirm('¿Seguro que quieres eliminar esta sesión y toda su asistencia? Esta acción no se puede deshacer.');
+    const confirmar = window.confirm('¿Seguro que quieres eliminar esta sesión y toda su asistencia? Esta acción no se puede deshacer despues');
     if (!confirmar) return;
     await fetch(`/api/sesiones/${id}`, { method: 'DELETE' });
     await cargarSesiones();
